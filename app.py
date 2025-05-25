@@ -61,9 +61,13 @@ def load_model():
         cache_dir = os.path.join(os.path.expanduser("~"), ".cache", "torch", "hub")
         os.makedirs(cache_dir, exist_ok=True)
         
+        # 設置環境變數
+        os.environ['TORCH_HOME'] = cache_dir
+        
         # 載入模型
         model, alphabet = esm.pretrained.esm2_t12_35M_UR50D()
         model = model.eval()
+        model = model.cpu()  # 確保使用 CPU
         return model, alphabet
     except Exception as e:
         st.error(f"模型載入錯誤：{str(e)}")
