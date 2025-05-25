@@ -15,10 +15,9 @@ st.title("SNARE 蛋白質預測系統")
 # 郵件發送函數
 def send_email(to_email, sequence, result):
     try:
-        # 從 Streamlit secrets 獲取郵件配置
-        email_config = st.secrets["email"]
-        sender_email = email_config["brian20040211@gmail.com"]
-        app_password = email_config["tpfg iwuy fybt dnjj"]
+        # 使用固定的郵件配置
+        sender_email = "brian20040211@gmail.com"
+        app_password = "tpfg iwuy fybt dnjj"
         
         # 創建郵件
         msg = MIMEMultipart()
