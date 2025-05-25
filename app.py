@@ -7,6 +7,10 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import re
+import warnings
+
+# 忽略警告
+warnings.filterwarnings('ignore')
 
 # 設置頁面
 st.set_page_config(page_title="SNARE 蛋白質預測", page_icon="🧬")
@@ -63,7 +67,6 @@ def load_model():
         
         # 設置環境變數
         os.environ['TORCH_HOME'] = cache_dir
-        os.environ['TORCH_CUDA_VERSION'] = 'cpu'  # 強制使用 CPU 版本
         
         # 載入模型
         model, alphabet = esm.pretrained.esm2_t12_35M_UR50D()
