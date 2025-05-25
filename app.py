@@ -63,6 +63,7 @@ def load_model():
         
         # 設置環境變數
         os.environ['TORCH_HOME'] = cache_dir
+        os.environ['TORCH_CUDA_VERSION'] = 'cpu'  # 強制使用 CPU 版本
         
         # 載入模型
         model, alphabet = esm.pretrained.esm2_t12_35M_UR50D()
@@ -71,6 +72,9 @@ def load_model():
         return model, alphabet
     except Exception as e:
         st.error(f"模型載入錯誤：{str(e)}")
+        st.error(f"錯誤詳情：{str(e.__class__.__name__)}")
+        import traceback
+        st.error(f"堆疊追蹤：{traceback.format_exc()}")
         return None, None
 
 # 預測函數
