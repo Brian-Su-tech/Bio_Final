@@ -43,7 +43,7 @@ try:
     import esm
     print("ESM 版本:", esm.__version__)
     print("正在載入模型...")
-    model, alphabet = esm.pretrained.load_model_and_alphabet('esm2-t12-35M-UR50D')
+    model, alphabet = esm.pretrained.esm2_t12_35M_UR50D()
     print("模型載入成功")
     model = model.eval()
     model = model.to(device)
