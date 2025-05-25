@@ -1,5 +1,6 @@
 streamlit==1.32.0
-torch==2.0.0
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.1.0+cpu
 fair-esm==1.0.3
 numpy==1.23.5
 typing-extensions==4.5.0
