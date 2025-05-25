@@ -11,8 +11,7 @@ import re
 app = Flask(__name__)
 
 # 載入模型和相關組件
-device = torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
-# device = torch.device('cpu')
+device = torch.device('cpu')  # 在 Render 上使用 CPU
 
 # CNN 模型定義
 class CNN(nn.Module):
