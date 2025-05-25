@@ -97,12 +97,51 @@ def predict_sequence(sequence, model, alphabet):
         
         # 獲取最後一層的嵌入向量
         embeddings = results["representations"][12]
-        embeddings = embeddings[0, 1:-1, :]
-        mean_embedding = embeddings.mean(dim=0)
+        embeddings = embeddings[0, 1:-1, :]  # 移除特殊標記
         
-        # 簡單的預測邏輯
-        prediction = "SNARE" if torch.mean(mean_embedding) > 0 else "Non-SNARE"
-        confidence = float(torch.sigmoid(torch.mean(mean_embedding)))
+        # 計算序列特徵
+        # 1. 計算每個位置的統計特徵
+        mean_embedding = embeddings.mean(dim=0)
+        std_embedding = embeddings.std(dim=0)
+        max_embedding = embeddings.max(dim=0)[0]
+        min_embedding = embeddings.min(dim=0)[0]
+        
+        # 2. 計算序列長度特徵
+        seq_length = len(sequence)
+        length_feature = torch.tensor([seq_length / 1000.0])  # 歸一化長度
+        
+        # 3. 計算氨基酸組成特徵
+        aa_composition = {}
+        for aa in 'ACDEFGHIKLMNPQRSTVWY':
+            aa_composition[aa] = sequence.count(aa) / len(sequence)
+        
+        # 4. 合併所有特徵
+        features = torch.cat([
+            mean_embedding,
+            std_embedding,
+            max_embedding,
+            min_embedding,
+            length_feature,
+            torch.tensor([aa_composition[aa] for aa in 'ACDEFGHIKLMNPQRSTVWY'])
+        ])
+        
+        # 5. 使用更複雜的預測邏輯
+        # 計算 SNARE 特徵的加權和
+        snare_weights = torch.tensor([
+            0.1,  # 平均嵌入
+            0.1,  # 標準差
+            0.2,  # 最大值
+            0.1,  # 最小值
+            0.2,  # 長度特徵
+            0.3   # 氨基酸組成
+        ])
+        
+        # 計算 SNARE 分數
+        snare_score = torch.sigmoid(torch.sum(features * snare_weights))
+        
+        # 根據分數做出預測
+        prediction = "SNARE" if snare_score > 0.6 else "Non-SNARE"
+        confidence = float(snare_score)
         
         return {
             'prediction': prediction,
@@ -114,6 +153,9 @@ def predict_sequence(sequence, model, alphabet):
         }
     except Exception as e:
         st.error(f"預測錯誤：{str(e)}")
+        st.error(f"錯誤詳情：{str(e.__class__.__name__)}")
+        import traceback
+        st.error(f"堆疊追蹤：{traceback.format_exc()}")
         return None
 
 # 主界面
