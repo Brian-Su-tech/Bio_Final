@@ -40,11 +40,19 @@ class CNN(nn.Module):
 
 # 載入 ESM 模型
 try:
-    model, alphabet = esm.pretrained.esm2_t12_35M_UR50D()
+    import esm
+    print("ESM 版本:", esm.__version__)
+    print("正在載入模型...")
+    model, alphabet = esm.pretrained.load_model_and_alphabet('esm2-t12-35M-UR50D')
+    print("模型載入成功")
     model = model.eval()
     model = model.to(device)
+    print("模型已移至設備:", device)
 except Exception as e:
     print(f"載入 ESM 模型時發生錯誤：{str(e)}")
+    print("錯誤類型:", type(e).__name__)
+    import traceback
+    print("詳細錯誤信息:", traceback.format_exc())
     exit(1)
 
 # 載入訓練好的 CNN 模型
