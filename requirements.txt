@@ -4,7 +4,7 @@ torch==2.7.0+cpu
 fair-esm==1.0.3
 numpy>=1.26.0
 setuptools>=69.0.0
-typing-extensions==4.5.0
+typing-extensions>=4.10.0
 tqdm==4.65.0
 requests==2.31.0
 python-dotenv==1.0.0
